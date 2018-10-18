@@ -16,6 +16,16 @@ python lists.
 
 import math
 import numpy as np
+import matplotlib.pyplot as plt
+
+def gauss(x):
+    return (1/math.sqrt(2*math.pi))*math.exp(-x**2/2)
+
+def sinc(x):
+    return (math.sin(x)/x)
+
+def sinf(x):
+    return (math.sin(1/x))
 
 def gen_gaussian_list(a, b, n=1000):
     """gen_gaussian_list(a, b, n=1000)
@@ -36,8 +46,6 @@ def gen_gaussian_list(a, b, n=1000):
     x = [a + k*dx for k in range(n)]         # domain list
     
     # Local implementation of a Gaussian function
-    def gauss(x):
-        return (1/math.sqrt(2*math.pi))*math.exp(-x**2/2)
     
     g = [gauss(xk) for xk in x]                  # range list
     return (x, g)
@@ -47,19 +55,49 @@ def gen_gaussian_array(a, b, n=1000):
     """gen_gaussian_array(a, b, n=1000)
     Generate a discrete approximation of a Gaussian function, including its
     domain and range, stored as a pair of numpy arrays.
-    
+
     Args:
         a (float) : Lower bound of domain
         b (float) : Upper bound of domain
         n (int, optional) : Number of points in domain, defaults to 1000.
-    
+
     Returns:
         (x, g) : Pair of numpy arrays of float64
             x  : [a, ..., b] Array of n equally spaced float64 between a and b
             g  : [g(a), ..., g(b)] Array of Gaussian values matched to x
     """
+    list1 = []
+    x = np.linspace(a,b,endpoint=True,num=n)
+    for i in x:
+        list1.append(gauss(i))
+    g = np.array(list1)
+    return(x,g)
+
     pass
 
+def plotc(a,b,n=1000):
+    clist = []
+    x,y = gen_gaussian_array(a,b,n)
+    for i in x:
+        if (i != 0):
+            clist.append(sinc(i))
+        else:
+            clist.append(1)
+    plt.plot(x,clist)
+
+    plt.plot(x,y)
+
+def plotf(a,b,n=1000):
+    flist = []
+    x,y = gen_gaussian_array(a,b,n)
+    for i in x:
+        if (i != 0):
+            flist.append(sinf(i))
+        else:
+            flist.append(0)
+    plt.plot(x,flist)
+
+    plt.plot(x,y)
 
 def main(a,b,n=1000):
     """main(a, b, n=1000)
